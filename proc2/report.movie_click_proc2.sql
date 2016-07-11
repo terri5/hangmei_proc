@@ -37,7 +37,7 @@ exec(@tmp_sql)
 				set @TId=SUBSTRING(@ID,@PointerPrev,@PointerCurr-@PointerPrev)
 				set @T_NAME=SUBSTRING(@MOVIE_NAME,@PointerPrev2,@PointerCurr2-@PointerPrev2)
      			set @tmp_sql='insert into '+@movie_click_tmp_tab_name+' select N'''+@T_NAME+''','+convert(varchar(3),@v_t_order)+',COUNT(DISTINCT(p.mac)) ,COUNT(*) from '
-				+@p_train_pv_tmp_tab_name+' p where p.page='''+@TID+'''';
+				    +@p_train_pv_tmp_tab_name+' p where p.page='''+@TID+'''';
                  exec(@tmp_sql)
 				SET @PointerPrev = @PointerCurr+1
 				SET @PointerPrev2 = @PointerCurr2+1
