@@ -1,0 +1,49 @@
+CREATE DATABASE SCOPED CREDENTIAL terri_1
+WITH
+IDENTITY = 'terri_1',
+SECRET = 'pFrnqZKrd2Y4VE1eumOs9apf+YOM8tux015nMMPrjQLn+uzAVXdIhRLf+7XoLHG8g6iR+zeApy19vb3AxQH39A=='
+
+drop EXTERNAL DATA SOURCE terri_1_ds
+
+CREATE EXTERNAL DATA SOURCE terri_1_ds
+WITH (
+TYPE = HADOOP,
+LOCATION = N'wasbs://datacontainer@analyzelog.blob.core.chinacloudapi.cn',
+CREDENTIAL = terri_1
+);
+
+CREATE EXTERNAL FILE FORMAT terri_1_df
+WITH (
+FORMAT_TYPE = DelimitedText,
+FORMAT_OPTIONS (FIELD_TERMINATOR = '\t')
+);
+
+
+CREATE EXTERNAL TABLE dbo.hit_test (
+    [dmac] nvarchar(64) COLLATE SQL_Latin1_General_CP1_CI_AS NULL, 
+    [mac] nvarchar(32) COLLATE SQL_Latin1_General_CP1_CI_AS NULL, 
+    [ip] nvarchar(32) COLLATE SQL_Latin1_General_CP1_CI_AS NULL, 
+    [time] nvarchar(32) COLLATE SQL_Latin1_General_CP1_CI_AS NULL, 
+    [hitId] nvarchar(1024) COLLATE SQL_Latin1_General_CP1_CI_AS NULL, 
+    [refhitId] nvarchar(1024) COLLATE SQL_Latin1_General_CP1_CI_AS NULL, 
+    [uid] varchar(128) COLLATE SQL_Latin1_General_CP1_CI_AS NULL, 
+    [posidx] int NULL, 
+    [pagetime] bigint NULL, 
+    [day_id] int NULL, 
+    [indb_datetime] bigint NULL, 
+    [indw_datetime] bigint NULL, 
+    [client_os] varchar(128) COLLATE SQL_Latin1_General_CP1_CI_AS NULL, 
+    [mobile_brand] varchar(1024) COLLATE SQL_Latin1_General_CP1_CI_AS NULL, 
+    [client_browser] varchar(1024) COLLATE SQL_Latin1_General_CP1_CI_AS NULL, 
+    [version] varchar(64) COLLATE SQL_Latin1_General_CP1_CI_AS NULL, 
+    [groupid] varchar(16) COLLATE SQL_Latin1_General_CP1_CI_AS NULL, 
+    [pagetime2] bigint NULL, 
+    [app] varchar(32) COLLATE SQL_Latin1_General_CP1_CI_AS NULL
+)
+WITH (
+LOCATION='hit/',
+DATA_SOURCE=terri_1_ds,
+FILE_FORMAT=terri_1_df
+);
+
+select * from dbo.hit_test
